@@ -11,12 +11,25 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  */
 public class Agent extends Thread {
+	private int idAgent;
 	private Position pos;
 	private Position posFinal;
+	private boolean arrive;
+	private static int cptAgent = 0;
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		// tant que l'obj de la grille est pas rempli
+		while(!arrive){
+			
+			
+			
+			
+		}
+		
+		
+		
 		super.run();
 
 	}
@@ -26,10 +39,12 @@ public class Agent extends Thread {
 	 * @param x
 	 * @param y
 	 */
+	@SuppressWarnings("static-access")
 	public Agent(Position pos, Position posFinal) {
 		super();
 		this.pos = pos;
 		this.posFinal = posFinal;
+		this.idAgent = this.cptAgent++;
 	}
 
 	public Position getPos() {
@@ -46,6 +61,14 @@ public class Agent extends Thread {
 
 	public void setPosFinal(Position posFinal) {
 		this.posFinal = posFinal;
+	}
+
+	public int getIdAgent() {
+		return idAgent;
+	}
+
+	public void setIdAgent(int idAgent) {
+		this.idAgent = idAgent;
 	}
 
 }
