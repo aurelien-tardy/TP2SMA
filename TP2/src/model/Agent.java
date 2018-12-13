@@ -10,28 +10,68 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Epulapp
  *
  */
-public class Agent extends Thread {
+public class Agent implements Runnable {
 	private int idAgent;
 	private Position pos;
 	private Position posFinal;
 	private boolean arrive;
+	private Grille grille;
+	
 	private static int cptAgent = 0;
 
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		// tant que l'obj de la grille est pas rempli
 		while(!arrive){
+			Mouvement mouvement = Mouvement.AUCUN;
 			
-			
-			
-			
+			if(posFinal.getX() != pos.getX()){
+				if(posFinal.getX() > pos.getX())
+					mouvement = Mouvement.DROITE;
+				else
+					mouvement = Mouvement.GAUCHE;
+			}else if(posFinal.getY() != pos.getY()){
+				if(posFinal.getY() > pos.getY())
+					mouvement = Mouvement.BAS;
+				else
+					mouvement = Mouvement.HAUT;
+				
+			}else{
+				this.arrive = true;
+				Thread.currentThread().interrupt();
+			}
+			System.out.println(mouvement);
+			this.move(mouvement);
 		}
 		
-		
-		
-		super.run();
 
+	}
+
+	private void move(Mouvement mouvement) {
+		if (mouvement.equals(Mouvement.AUCUN))	return;
+		Position newP = this.getNewPosition(mouvement);
+		if(newP!=null){
+			int retourCaseLibre = grille.caseLibre(newP);
+			if(retourCaseLibre == 1){
+				this.grille.updateGrille(this.getPos(), newP, this);
+				this.setPos(newP);
+			}
+		}
+	}
+
+	private Position getNewPosition(Mouvement mouvement) {
+		Position output = new Position(this.getPos().getX(), this.getPos().getY());
+		if(mouvement.equals(Mouvement.HAUT))
+			output.setY(this.getPos().getX() - 1);
+		if(mouvement.equals(Mouvement.BAS))
+			output.setY(this.getPos().getX() + 1);
+		if(mouvement.equals(Mouvement.GAUCHE))
+			output.setX(this.getPos().getY() - 1);
+		if(mouvement.equals(Mouvement.DROITE))
+			output.setX(this.getPos().getY() + 1);
+		return output;
 	}
 
 	/**
@@ -40,11 +80,14 @@ public class Agent extends Thread {
 	 * @param y
 	 */
 	@SuppressWarnings("static-access")
-	public Agent(Position pos, Position posFinal) {
+	public Agent(Position pos, Position posFinal, Grille grille) {
 		super();
 		this.pos = pos;
 		this.posFinal = posFinal;
 		this.idAgent = this.cptAgent++;
+		this.grille = grille;
+		this.arrive = false;
+		
 	}
 
 	public Position getPos() {
@@ -69,6 +112,11 @@ public class Agent extends Thread {
 
 	public void setIdAgent(int idAgent) {
 		this.idAgent = idAgent;
+	}
+
+	public void runAgent() {
+		new Thread(this).start();
+		
 	}
 
 }

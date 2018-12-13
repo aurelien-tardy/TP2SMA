@@ -32,6 +32,7 @@ public class Grille extends Observable {
 		this.nbAgents = nbAgents;
 		this.initGrille();
 		this.initAgents();
+		
 	}
 
 	private void initAgents() {
@@ -40,7 +41,7 @@ public class Grille extends Observable {
 			randInit = ThreadLocalRandom.current().nextInt(0,posInitialesLibres.size()-1);
 			randFinal = ThreadLocalRandom.current().nextInt(0,posFinalesLibres.size()-1);
 			posAgents.put(posInitialesLibres.get(randInit), 
-					new Agent(posInitialesLibres.get(randInit), posFinalesLibres.get(randFinal)));
+					new Agent(posInitialesLibres.get(randInit), posFinalesLibres.get(randFinal), this));
 			posInitialesLibres.remove(randInit);
 			posFinalesLibres.remove(randFinal);
 			
@@ -73,6 +74,30 @@ public class Grille extends Observable {
 	
 	public List<Agent> getAgents(){
 		return new ArrayList<>(posAgents.values());
+	}
+
+	public int caseLibre(Position newP) {
+		int output = 1;
+		
+		if(newP.getX() > n || newP.getY() > n || newP.getX() < 0 || newP.getY() < 0)
+			return 0; // On retourne 0 pour prévenir d'une destination hors map
+			if(this.posAgents.get(newP)!=null)
+				return 2; // On retourne 2 pour prévenir qu'il y a un autre agent présent
+		
+		return output;
+	}
+
+	public void updateGrille(Position oldP, Position newP, Agent a) {	
+		this.posAgents.put(newP, a);
+		this.posAgents.put(oldP, null);
+		this.notifyAll();	
+	}
+	
+	public void launchAgents(){
+		for (Agent it_agent : posAgents.values()) {
+			if(it_agent!=null)
+				it_agent.runAgent();
+		}
 	}
 
 }
