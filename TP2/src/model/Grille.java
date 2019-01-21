@@ -90,7 +90,8 @@ public class Grille extends Observable {
 	public void updateGrille(Position oldP, Position newP, Agent a) {	
 		this.posAgents.put(newP, a);
 		this.posAgents.put(oldP, null);
-		this.notifyAll();	
+		this.setChanged();
+		this.notifyObservers();
 	}
 	
 	public void launchAgents(){

@@ -50,6 +50,7 @@ public class Agent implements Runnable {
 	}
 
 	private void move(Mouvement mouvement) {
+		System.out.println(this.pos);
 		if (mouvement.equals(Mouvement.AUCUN))	return;
 		Position newP = this.getNewPosition(mouvement);
 		if(newP!=null){
@@ -59,18 +60,19 @@ public class Agent implements Runnable {
 				this.setPos(newP);
 			}
 		}
+		System.out.println(this.pos);
 	}
 
 	private Position getNewPosition(Mouvement mouvement) {
 		Position output = new Position(this.getPos().getX(), this.getPos().getY());
 		if(mouvement.equals(Mouvement.HAUT))
-			output.setY(this.getPos().getX() - 1);
+			output.setX(this.getPos().getX() - 1);
 		if(mouvement.equals(Mouvement.BAS))
-			output.setY(this.getPos().getX() + 1);
+			output.setX(this.getPos().getX() + 1);
 		if(mouvement.equals(Mouvement.GAUCHE))
-			output.setX(this.getPos().getY() - 1);
+			output.setY(this.getPos().getY() - 1);
 		if(mouvement.equals(Mouvement.DROITE))
-			output.setX(this.getPos().getY() + 1);
+			output.setY(this.getPos().getY() + 1);
 		return output;
 	}
 
