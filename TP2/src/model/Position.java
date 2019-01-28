@@ -49,12 +49,19 @@ public class Position {
 		Position pos = (Position) obj;
 		boolean posX = this.getX() == pos.getX();
 		boolean posY = this.getY() == pos.getY();
-		return super.equals(obj);
+		return posX && posY;
+	}
+
+	@Override
+	public int hashCode() {
+		int result = x;
+		result = 31 * result + y;
+		return result;
 	}
 
 	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+         * @see java.lang.Object#toString()
+         */
 	@Override
 	public String toString() {
 		return "Position [x=" + x + ", y=" + y + "]";
