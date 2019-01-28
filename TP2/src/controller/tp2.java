@@ -24,7 +24,7 @@ import java.util.Observer;
 
 public class tp2 extends Application implements Observer {
 
-	public static Grille grille;
+	public Grille grille;
 
 	private final static int TAILLE_CASE = 100;
 	private final static int TAILLE_GRILLE = 5;
@@ -41,7 +41,7 @@ public class tp2 extends Application implements Observer {
 	public void start(Stage primaryStage) throws Exception {
 		List<List<Message>> boiteAuxLettres = new ArrayList<List<Message>>();
 
-		grille = new Grille(TAILLE_GRILLE, 1);
+		grille = new Grille(TAILLE_GRILLE, 3);
 		grille.addObserver(this);
 
 		// Remplissage des deux grilles initiales et finales avec les position
@@ -57,7 +57,7 @@ public class tp2 extends Application implements Observer {
 
 		// Onglet de la grille initiale
 		Tab tabI = new Tab();
-		tabI.setText("Grille courrante");
+		tabI.setText("Grille courante");
 		HBox hboxI = new HBox();
 		hboxI.getChildren().add(gPaneGrilleInit);
 		hboxI.setAlignment(Pos.CENTER);
@@ -143,9 +143,6 @@ public class tp2 extends Application implements Observer {
 
 	public void updateGrille() {
 
-		GridPane newGridPane = this.initialisationGrille(TAILLE_GRILLE, TAILLE_GRILLE, COULEUR_GRILLE, TAILLE_CASE,
-				false);
-
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
@@ -193,6 +190,7 @@ public class tp2 extends Application implements Observer {
 
 			}
 		});
+
 	}
 
 	@Override

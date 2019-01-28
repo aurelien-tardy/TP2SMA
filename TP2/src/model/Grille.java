@@ -20,7 +20,8 @@ public class Grille extends Observable {
 	private int nbAgents;
 	private List<Position> posFinalesLibres;
 	private List<Position> posInitialesLibres;
-	private Map<Position, Agent> posAgents; 
+	private Map<Position, Agent> posAgents;
+	private int nbAgentsOk;
 
 	/**
 	 * @param n
@@ -32,21 +33,21 @@ public class Grille extends Observable {
 		this.nbAgents = nbAgents;
 		this.initGrille();
 		this.initAgents();
-		
+
 	}
 
 	private void initAgents() {
 		int randInit, randFinal;
 		for (int i = 0; i < nbAgents; i++) {
-			randInit = ThreadLocalRandom.current().nextInt(0,posInitialesLibres.size()-1);
-			randFinal = ThreadLocalRandom.current().nextInt(0,posFinalesLibres.size()-1);
-			posAgents.put(posInitialesLibres.get(randInit), 
+			randInit = ThreadLocalRandom.current().nextInt(0, posInitialesLibres.size() - 1);
+			randFinal = ThreadLocalRandom.current().nextInt(0, posFinalesLibres.size() - 1);
+			posAgents.put(posInitialesLibres.get(randInit),
 					new Agent(posInitialesLibres.get(randInit), posFinalesLibres.get(randFinal), this));
 			posInitialesLibres.remove(randInit);
 			posFinalesLibres.remove(randFinal);
-			
+
 		}
-		
+
 	}
 
 	private void initGrille() {
@@ -56,7 +57,7 @@ public class Grille extends Observable {
 		posInitialesLibres = new ArrayList<Position>();
 		for (int i = 1; i <= n; i++) {
 			for (int j = 1; j <= n; j++) {
-				p = new Position(i,j);
+				p = new Position(i, j);
 				posAgents.put(p, null);
 				posFinalesLibres.add(p);
 				posInitialesLibres.add(p);
@@ -71,34 +72,61 @@ public class Grille extends Observable {
 	public void setN(int n) {
 		this.n = n;
 	}
-	
-	public List<Agent> getAgents(){
+
+	public List<Agent> getAgents() {
 		return new ArrayList<>(posAgents.values());
 	}
 
 	public int caseLibre(Position newP) {
 		int output = 1;
-		
-		if(newP.getX() > n || newP.getY() > n || newP.getX() < 0 || newP.getY() < 0)
+
+		if (newP.getX() > n || newP.getY() > n || newP.getX() <= 0 || newP.getY() <= 0)
 			return 0; // On retourne 0 pour prévenir d'une destination hors map
-			if(this.posAgents.get(newP)!=null)
-				return 2; // On retourne 2 pour prévenir qu'il y a un autre agent présent
-		
+
+		if (this.posAgents.get(newP) != null)
+			return 2; // On retourne 2 pour prévenir qu'il y a un autre agent
+						// présent
+
 		return output;
 	}
 
-	public void updateGrille(Position oldP, Position newP, Agent a) {	
-		this.posAgents.put(newP, a);
-		this.posAgents.put(oldP, null);
+	public void updateGrille(Position oldP, Position newP, Agent a, boolean todo) {
+		if (todo) {
+			this.posAgents.put(newP, a);
+			this.posAgents.put(oldP, null);
+
+		}
 		this.setChanged();
 		this.notifyObservers();
 	}
-	
-	public void launchAgents(){
+
+	public void launchAgents() {
 		for (Agent it_agent : posAgents.values()) {
-			if(it_agent!=null)
+			if (it_agent != null)
 				it_agent.runAgent();
 		}
+	}
+
+	/**
+	 * @return the nbAgentsOk
+	 */
+	public int getNbAgentsOk() {
+		return nbAgentsOk;
+	}
+
+	public void agentsOkPlus() {
+		this.nbAgentsOk++;
+	}
+
+	/**
+	 * @return the nbAgents
+	 */
+	public int getNbAgents() {
+		return nbAgents;
+	}
+
+	public boolean isFinish() {
+		return this.nbAgents == this.nbAgentsOk;
 	}
 
 }

@@ -27,40 +27,48 @@ public class Agent implements Runnable {
 		while(!arrive){
 			Mouvement mouvement = Mouvement.AUCUN;
 			
-			if(posFinal.getX() != pos.getX()){
-				if(posFinal.getX() > pos.getX())
+			if(posFinal.getY() != pos.getY()){
+				if(posFinal.getY() > pos.getY())
 					mouvement = Mouvement.DROITE;
 				else
 					mouvement = Mouvement.GAUCHE;
-			}else if(posFinal.getY() != pos.getY()){
-				if(posFinal.getY() > pos.getY())
+			}else if(posFinal.getX() != pos.getX()){
+				if(posFinal.getX() > pos.getX())
 					mouvement = Mouvement.BAS;
 				else
 					mouvement = Mouvement.HAUT;
 				
 			}else{
 				this.arrive = true;
-				Thread.currentThread().interrupt();
+				//Thread.currentThread().interrupt();
 			}
-			System.out.println(mouvement);
+			
 			this.move(mouvement);
 		}
+		this.grille.agentsOkPlus();
 		
 
 	}
 
 	private void move(Mouvement mouvement) {
-		System.out.println(this.pos);
-		if (mouvement.equals(Mouvement.AUCUN))	return;
+		
+		if (mouvement.equals(Mouvement.AUCUN)){
+			this.grille.updateGrille(null, null, null, false);
+			return;
+		}
 		Position newP = this.getNewPosition(mouvement);
 		if(newP!=null){
 			int retourCaseLibre = grille.caseLibre(newP);
 			if(retourCaseLibre == 1){
-				this.grille.updateGrille(this.getPos(), newP, this);
+				this.grille.updateGrille(this.getPos(), newP, this, true);
 				this.setPos(newP);
+			}else if(retourCaseLibre == 2){
+				System.out.println("Agent présent !");
+			}else{
+				System.out.println("lol");
 			}
 		}
-		System.out.println(this.pos);
+		
 	}
 
 	private Position getNewPosition(Mouvement mouvement) {
